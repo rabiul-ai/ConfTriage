@@ -23,7 +23,7 @@ ConfTriage is a confidence-calibrated clinical triage framework for pulmonary no
 
 ## Framework and Results
 
-<img width="986" height="220" alt="image" src="https://github.com/user-attachments/assets/c666887f-59d2-486e-b37b-61da8e9392a0" />
+<img width="995" height="212" alt="image" src="https://github.com/user-attachments/assets/26e93724-bc30-4fa1-b27b-33edbdd5ace2" />
 
 **Figure 1.** Overview of the ConfTriage framework. Structured radiological attributes are transformed into a deterministic natural-language description, analyzed by a generalist LLM, calibrated into a probabilistic prediction, and selectively referred to a specialist DL model when confidence is insufficient.
 
