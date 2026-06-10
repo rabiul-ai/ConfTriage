@@ -33,9 +33,9 @@ ConfTriage is a confidence-calibrated clinical triage framework for pulmonary no
 **Figure 2.** Selection of the operating threshold (τ = 0.28), balancing predictive performance and LLM decision coverage.
 
 
-<img width="830" height="358" alt="image" src="https://github.com/user-attachments/assets/2dff7622-6551-4c3c-b06b-5070e38ecd7c" />
+<img width="4709" height="2313" alt="auc_comparison_barplot" src="https://github.com/user-attachments/assets/7c74447c-e496-408f-8a6d-eb51cb80fed6" />
 
-**Figure 3.** Comparison of average precision (AP) across five LLMs under seven input regimes.
+**Figure 3.** Gemini-3.1 Flash-Lite achieved the highest AUC among all LLMs across all seven input regimes. The text-only regime yielded the best performance, and language\textendash inclusive regimes consistently outperformed the remaining regimes.
 
 ---
 
