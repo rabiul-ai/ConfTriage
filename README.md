@@ -124,7 +124,7 @@ If you find this repository useful in your research, please cite:
 
 We thank the maintainers of the LIDC-IDRI dataset and the developers of the open- and closed-source LLMs evaluated in this study.
 
-Special thanks to **Prof. Dr. Hasan Kurban**, **Samir Abdaljalil**, and **Prof. Dr. Erchin Serpedin** for their continuous support, collaboration, and valuable contributions throughout this research.
+Special thanks to **[Prof. Dr. Hasan Kurban](https://github.com/KurbanIntelligenceLab)**, **[Samir Abdaljalil](https://www.linkedin.com/in/samir-abdaljalil/)**, and **[Prof. Dr. Erchin Serpedin](https://engineering.tamu.edu/electrical/profiles/eserpedin.html)** for their continuous support, collaboration, and valuable contributions throughout this research.
 
 ---
 
