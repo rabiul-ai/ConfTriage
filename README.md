@@ -143,6 +143,6 @@ Ph.D. Researcher, Texas A&M University
 
 💼 **LinkedIn:** https://www.linkedin.com/in/rabiulkuet/
 
-For questions, collaborations, or research discussions, please open an issue in this repository or contact me directly.
+For any questions or collaboration opportunities, please contact me directly via email or LinkedIn.
 
 
