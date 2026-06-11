@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local artifacts
+outputs/
+logs/
+*.log
+
+# Local dataset assets (large, do not commit)
+2D Nodule Views/
+2D Nodule Views/**
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/

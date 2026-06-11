@@ -1,0 +1,203 @@
+project:
+  name: lung-llm-benchmark
+  seed: 42
+  output_dir: outputs/default_run
+
+data:
+  metadata_path: "LIDC-IDRI nodule metadata.xlsx"
+  image_dir: "2D Nodule Views"
+  # binary label is derived from cancer label: Y->1, N->0, U excluded
+  label_column: "cancer label"
+  include_uncertain: false
+  cohort_protocol:
+    enabled: true
+    selected_column: "nodule selected"
+    selected_value: "Yes"
+    diameter_column: "nodule diameter (mm)"
+    min_diameter_mm: 3.0
+    malignancy_column: "malignancy"
+    exclude_malignancy_values: [3]
+  cache_dir: "outputs/cache"
+
+preprocessing:
+  impute_strategy: "median"
+  scale_numeric: true
+  text_max_chars: 1600
+
+splits:
+  test_size: 0.2
+  val_size: 0.2
+  stratify: true
+
+ablations:
+  groups:
+    - name: "radiology_numeric"
+      include_text: false
+      include_image_stats: false
+      feature_cols:
+        - subtlety
+        - internal structure
+        - calcification
+        - sphericity
+        - margin
+        - lobulation
+        - spiculation
+        - textures
+        - nodule diameter (mm)
+    - name: "text_only"
+      include_text: true
+      include_image_stats: false
+      feature_cols: []
+    - name: "text_corruption_shuffle_malignant"
+      include_text: true
+      include_image_stats: false
+      text_corruption: "shuffle_within_malignant"
+      feature_cols: []
+    - name: "text_corruption_negated_attributes"
+      include_text: true
+      include_image_stats: false
+      text_corruption: "negate_attributes"
+      feature_cols: []
+    - name: "text_corruption_paraphrase_neutral"
+      include_text: true
+      include_image_stats: false
+      text_corruption: "paraphrase_neutral"
+      feature_cols: []
+    - name: "image_stats_only"
+      include_text: false
+      include_image_stats: true
+      feature_cols: []
+    - name: "img_plus_text"
+      include_text: true
+      include_image_stats: true
+      feature_cols: []
+    - name: "radiology_plus_text"
+      include_text: true
+      include_image_stats: false
+      feature_cols:
+        - subtlety
+        - internal structure
+        - calcification
+        - sphericity
+        - margin
+        - lobulation
+        - spiculation
+        - textures
+        - nodule diameter (mm)
+    - name: "radiology_plus_image_stats"
+      include_text: false
+      include_image_stats: true
+      feature_cols:
+        - subtlety
+        - internal structure
+        - calcification
+        - sphericity
+        - margin
+        - lobulation
+        - spiculation
+        - textures
+        - nodule diameter (mm)
+    - name: "all_modalities"
+      include_text: true
+      include_image_stats: true
+      feature_cols:
+        - subtlety
+        - internal structure
+        - calcification
+        - sphericity
+        - margin
+        - lobulation
+        - spiculation
+        - textures
+        - nodule diameter (mm)
+
+models:
+  - model_id: "openai/gpt-4o-mini"
+    family: "closed"
+    provider: "openai-compatible"
+    endpoint: "https://openrouter.ai/api/v1/chat/completions"
+    api_key_env: "OPENROUTER_API_KEY"
+    temperature: 0.0
+  - model_id: "anthropic/claude-3.5-haiku"
+    family: "closed"
+    provider: "openai-compatible"
+    endpoint: "https://openrouter.ai/api/v1/chat/completions"
+    api_key_env: "OPENROUTER_API_KEY"
+    temperature: 0.0
+  - model_id: "mistralai/mistral-large"
+    family: "closed"
+    provider: "openai-compatible"
+    endpoint: "https://openrouter.ai/api/v1/chat/completions"
+    api_key_env: "OPENROUTER_API_KEY"
+    temperature: 0.0
+  - model_id: "google/gemini-3.1-flash-lite-preview"
+    family: "closed"
+    provider: "openai-compatible"
+    endpoint: "https://openrouter.ai/api/v1/chat/completions"
+    api_key_env: "OPENROUTER_API_KEY"
+    temperature: 0.0
+  - model_id: "qwen/qwen-2.5-72b-instruct"
+    family: "open_source"
+    provider: "openai-compatible"
+    endpoint: "https://openrouter.ai/api/v1/chat/completions"
+    api_key_env: "OPENROUTER_API_KEY"
+    temperature: 0.0
+
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - roc_auc
+    - average_precision
+  bootstrap_rounds: 300
+  bootstrap_alpha: 0.05
+  # Main tables/figures/stat tests are computed on this split.
+  reporting_split: "full"
+  # Resume is full-driven by default: if full exists for a model+ablation, it is skipped.
+  required_completion_splits: ["full"]
+  # If full is missing but test exists, predict only the non-test remainder and merge.
+  incremental_full_from_test: true
+  # Optional reporting filters (empty by default).
+  exclude_model_ids_from_reporting: []
+  exclude_model_families_from_reporting: []
+  # Auxiliary ablations are excluded from main tables/figures and emitted separately.
+  exclude_ablation_names_from_main_reporting: []
+  exclude_ablation_name_prefixes_from_main_reporting:
+    - "text_corruption_"
+  skip_excluded_from_execution: false
+
+plotting:
+  style: "whitegrid"
+  dpi: 160
+
+prompt_ablation:
+  model_id: "google/gemini-3.1-flash-lite-preview"
+  templates: ["T1", "T2", "T3", "T4", "T5"]
+  temperatures: [0.0, 0.3, 0.5, 0.7, 1.0]
+  replicates: 5
+  dcalib_split: "val"
+  n_shots: 3
+  bootstrap_rounds: 300
+  bootstrap_alpha: 0.05
+  self_consistency:
+    enabled: true
+    template_id: "T3"
+    temperature: 0.7
+    n_samples: 10
+
+description_source_ablation:
+  target_model_id: "google/gemini-3.1-flash-lite-preview"
+  paraphraser_model_id: "meta-llama/llama-3.1-8b-instruct"
+  paraphraser_endpoint: "https://openrouter.ai/api/v1/chat/completions"
+  paraphraser_api_key_env: "OPENROUTER_API_KEY"
+  paraphraser_seed: 42
+  paraphraser_temperature: 0.0
+  paraphraser_retry_attempts: 3
+  prediction_flush_every: 5
+  classification_temperature: 0.0
+  bootstrap_rounds: 300
+  bootstrap_alpha: 0.05
+  near_leak_ablation:
+    enabled: true
